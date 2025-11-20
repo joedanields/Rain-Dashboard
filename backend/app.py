@@ -1,6 +1,5 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
-from flask_socketio import SocketIO, emit
 import serial
 import json
 import threading
@@ -9,7 +8,6 @@ from config import SERIAL_PORT, BAUD_RATE, SERIAL_TIMEOUT
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for React frontend
-socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Global variable to store latest sensor data
 latest_data = {
@@ -65,9 +63,7 @@ def read_serial_data():
                     try:
                         data = json.loads(line)
                         latest_data = data
-                        
-                        # Emit data to all connected WebSocket clients
-                        socketio.emit('sensor_update', data)
+                        print(f"✓ Data updated: Temp={data.get('temperature')}°C, Humidity={data.get('humidity')}%")
                         
                     except json.JSONDecodeError as e:
                         print(f"JSON parse error: {e}")
@@ -102,31 +98,19 @@ def get_status():
         "baud_rate": BAUD_RATE
     })
 
-# WebSocket events
-@socketio.on('connect')
-def handle_connect():
-    """Handle client connection"""
-    print('Client connected')
-    emit('connection_response', {'connected': True})
-
-@socketio.on('disconnect')
-def handle_disconnect():
-    """Handle client disconnection"""
-    print('Client disconnected')
-
-@socketio.on('request_data')
-def handle_request_data():
-    """Send latest data when requested"""
-    emit('sensor_update', latest_data)
-
 if __name__ == '__main__':
     # Start serial reading thread
     serial_thread = threading.Thread(target=read_serial_data, daemon=True)
     serial_thread.start()
     
-    # Run Flask app with SocketIO
-    print("Starting Flask server...")
-    print(f"API endpoint: http://localhost:5000/api/sensor-data")
-    print(f"WebSocket endpoint: ws://localhost:5000")
+    # Run Flask app
+    print("=" * 50)
+    print("🚀 Flask Server Starting - Serial Monitoring Mode")
+    print("=" * 50)
+    print(f"📡 Serial Port: {SERIAL_PORT}")
+    print(f"⚡ Baud Rate: {BAUD_RATE}")
+    print(f"🌐 API Endpoint: http://localhost:5000/api/sensor-data")
+    print(f"📊 Status Endpoint: http://localhost:5000/api/status")
+    print("=" * 50)
     
-    socketio.run(app, debug=True, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)

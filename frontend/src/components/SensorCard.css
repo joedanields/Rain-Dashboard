@@ -1,0 +1,137 @@
+.sensor-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  position: relative;
+  overflow: hidden;
+  min-height: 200px;
+}
+
+.sensor-card-bg {
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, var(--card-color) 0%, transparent 70%);
+  opacity: 0.03;
+  animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.sensor-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--card-color) 0%, var(--card-color)dd 100%);
+  box-shadow: 0 8px 24px var(--card-color)44;
+  position: relative;
+  z-index: 1;
+}
+
+.sensor-icon-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 20px;
+  padding: 2px;
+  background: linear-gradient(45deg, var(--card-color), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.5;
+}
+
+.sensor-icon {
+  font-size: 40px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.sensor-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.sensor-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin: 0;
+}
+
+.sensor-value {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.value-number {
+  font-size: 48px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--card-color) 0%, var(--card-color)88 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+  text-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.value-unit {
+  font-size: 20px;
+  font-weight: 600;
+  color: #9ca3af;
+}
+
+.value-loading {
+  font-size: 48px;
+  color: #d1d5db;
+  font-weight: 900;
+}
+
+.sensor-sparkline {
+  margin-top: auto;
+  opacity: 0.6;
+}
+
+@media (max-width: 768px) {
+  .sensor-card {
+    padding: 20px;
+    min-height: 180px;
+  }
+
+  .sensor-icon-wrapper {
+    width: 60px;
+    height: 60px;
+  }
+
+  .sensor-icon {
+    font-size: 32px;
+  }
+
+  .value-number {
+    font-size: 40px;
+  }
+
+  .value-unit {
+    font-size: 18px;
+  }
+}
